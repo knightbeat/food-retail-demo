@@ -1,0 +1,45 @@
+version: '2'
+services:
+  analyticsdb:
+    container_name: analyticsdb
+    build: 
+        context: .
+        dockerfile: database/Dockerfile
+    ports:
+     - "3306:3306"
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+  ei:
+    container_name: int.retailer.com
+    build: 
+        context: .
+        dockerfile: integrator/Dockerfile
+    ports:
+     - "9765:9763"
+     - "9445:9443"
+     - "8281:8280"
+     - "8244:8243"
+  das:
+    container_name: das
+    depends_on:
+      - analyticsdb
+    build:
+      context: .
+      dockerfile: das/Dockerfile
+    ports:
+      - "9764:9764"
+      - "9444:9444"
+      - "7712:7712"
+      - "7612:7612"
+  apim:
+    container_name: apim
+    depends_on:
+      - analyticsdb 
+    build: 
+        context: .
+        dockerfile: apim/Dockerfile
+    ports:
+     - "9763:9763"
+     - "9443:9443"
+     - "8280:8280"
+     - "8243:8243"
