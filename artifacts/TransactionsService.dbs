@@ -1,0 +1,87 @@
+<data name="TransactionsService" serviceNamespace="http://transactions.retailer.com">
+    <config id="default">
+        <property name="carbon_datasource_name">SERVICES_DB</property>
+    </config>
+    <query id="select_with_key_transactions_query" useConfig="default">
+        <sql>SELECT id, transaction_no, product_code, product_name, quantity, stk_upd_ref, total_amount FROM transactions WHERE id=?</sql>
+        <result element="transactionsCollection" rowName="transactions">
+            <element column="id" name="id" xsdType="xs:integer"/>
+            <element column="transaction_no" name="transaction_no" xsdType="xs:string"/>
+            <element column="product_code" name="product_code" xsdType="xs:string"/>
+            <element column="product_name" name="product_name" xsdType="xs:string"/>
+            <element column="quantity" name="quantity" xsdType="xs:integer"/>
+            <element column="stk_upd_ref" name="stk_upd_ref" xsdType="xs:string"/>
+            <element column="total_amount" name="total_amount" xsdType="xs:double"/>
+        </result>
+        <param name="id" ordinal="1" sqlType="INTEGER"/>
+    </query>
+    <query id="update_transactions_query" useConfig="default">
+        <sql>UPDATE transactions SET transaction_no=?,product_code=?,product_name=?,quantity=?,stk_upd_ref=?,total_amount=? WHERE id=?</sql>
+        <param name="transaction_no" ordinal="1" sqlType="STRING"/>
+        <param name="product_code" ordinal="2" sqlType="STRING"/>
+        <param name="product_name" ordinal="3" sqlType="STRING"/>
+        <param name="quantity" ordinal="4" sqlType="INTEGER"/>
+        <param name="stk_upd_ref" ordinal="5" sqlType="STRING"/>
+        <param name="total_amount" ordinal="6" sqlType="REAL"/>
+        <param name="id" ordinal="7" sqlType="INTEGER"/>
+    </query>
+    <query id="select_all_transactions_query" useConfig="default">
+        <sql>SELECT id, transaction_no, product_code, product_name, quantity, stk_upd_ref, total_amount FROM transactions</sql>
+        <result element="transactionsCollection" rowName="transactions">
+            <element column="id" name="id" xsdType="xs:integer"/>
+            <element column="transaction_no" name="transaction_no" xsdType="xs:string"/>
+            <element column="product_code" name="product_code" xsdType="xs:string"/>
+            <element column="product_name" name="product_name" xsdType="xs:string"/>
+            <element column="quantity" name="quantity" xsdType="xs:integer"/>
+            <element column="stk_upd_ref" name="stk_upd_ref" xsdType="xs:string"/>
+            <element column="total_amount" name="total_amount" xsdType="xs:double"/>
+        </result>
+    </query>
+    <query id="insert_transactions_query" useConfig="default">
+        <sql>INSERT INTO transactions(transaction_no,product_code,product_name,quantity,stk_upd_ref,total_amount) VALUES(?,?,?,?,?,?)</sql>
+        <param name="transaction_no" ordinal="1" sqlType="STRING"/>
+        <param name="product_code" ordinal="2" sqlType="STRING"/>
+        <param name="product_name" ordinal="3" sqlType="STRING"/>
+        <param name="quantity" ordinal="4" sqlType="INTEGER"/>
+        <param name="stk_upd_ref" ordinal="5" sqlType="STRING"/>
+        <param name="total_amount" ordinal="6" sqlType="REAL"/>
+    </query>
+    <query id="delete_transactions_query" useConfig="default">
+        <sql>DELETE FROM transactions WHERE id=?</sql>
+        <param name="id" ordinal="1" sqlType="INTEGER"/>
+    </query>
+    <operation name="select_all_transactions_operation">
+        <call-query href="select_all_transactions_query"/>
+    </operation>
+    <operation name="delete_transactions_operation">
+        <call-query href="delete_transactions_query">
+            <with-param name="id" query-param="id"/>
+        </call-query>
+    </operation>
+    <operation name="select_with_key_transactions_operation">
+        <call-query href="select_with_key_transactions_query">
+            <with-param name="id" query-param="id"/>
+        </call-query>
+    </operation>
+    <operation returnRequestStatus="true" name="insert_transactions_operation">
+        <call-query href="insert_transactions_query">
+            <with-param name="quantity" query-param="quantity"/>
+            <with-param name="total_amount" query-param="total_amount"/>
+            <with-param name="stk_upd_ref" query-param="stk_upd_ref"/>
+            <with-param name="product_code" query-param="product_code"/>
+            <with-param name="product_name" query-param="product_name"/>
+            <with-param name="transaction_no" query-param="transaction_no"/>
+        </call-query>
+    </operation>
+    <operation name="update_transactions_operation">
+        <call-query href="update_transactions_query">
+            <with-param name="quantity" query-param="quantity"/>
+            <with-param name="total_amount" query-param="total_amount"/>
+            <with-param name="stk_upd_ref" query-param="stk_upd_ref"/>
+            <with-param name="id" query-param="id"/>
+            <with-param name="product_code" query-param="product_code"/>
+            <with-param name="product_name" query-param="product_name"/>
+            <with-param name="transaction_no" query-param="transaction_no"/>
+        </call-query>
+    </operation>
+</data>

@@ -1,0 +1,97 @@
+<data name="ProductsListingService" serviceNamespace="http://data.retailer.com" transports="http https">
+    <config id="default">
+        <property name="carbon_datasource_name">SERVICES_DB</property>
+    </config>
+    <query id="update_products_query" useConfig="default">
+        <sql>UPDATE products SET code=?,name=?,price=? WHERE id=?</sql>
+        <param name="code" ordinal="1" sqlType="STRING"/>
+        <param name="name" ordinal="2" sqlType="STRING"/>
+        <param name="price" ordinal="3" sqlType="REAL"/>
+        <param name="id" ordinal="4" sqlType="INTEGER"/>
+    </query>
+    <query id="delete_products_query" useConfig="default">
+        <sql>DELETE FROM products WHERE code=?</sql>
+        <param name="code" ordinal="1" sqlType="STRING"/>
+    </query>
+    <query id="select_with_key_products_query" useConfig="default">
+        <sql>SELECT id, code, name, price FROM products WHERE code=?</sql>
+        <result element="products" rowName="product">
+            <element column="id" name="id" xsdType="xs:integer"/>
+            <element column="code" name="code" xsdType="xs:string"/>
+            <element column="name" name="name" xsdType="xs:string"/>
+            <element column="price" name="price" xsdType="xs:double"/>
+        </result>
+        <param name="code" ordinal="1" sqlType="STRING"/>
+    </query>
+    <query id="insert_products_query" useConfig="default">
+        <sql>INSERT INTO products(code,name,price) VALUES(?,?,?)</sql>
+        <param name="code" ordinal="1" sqlType="STRING"/>
+        <param name="name" ordinal="2" sqlType="STRING"/>
+        <param name="price" ordinal="3" sqlType="REAL"/>
+    </query>
+    <query id="select_all_products_query" useConfig="default">
+        <sql>SELECT id, code, name, price FROM products</sql>
+        <result element="products" rowName="product">
+            <element column="id" name="id" xsdType="xs:integer"/>
+            <element column="code" name="code" xsdType="xs:string"/>
+            <element column="name" name="name" xsdType="xs:string"/>
+            <element column="price" name="price" xsdType="xs:double"/>
+        </result>
+    </query>
+    <operation name="selectProductByCode">
+        <call-query href="select_with_key_products_query">
+            <with-param name="code" query-param="code"/>
+        </call-query>
+    </operation>
+    <operation name="listProducts">
+        <call-query href="select_all_products_query"/>
+    </operation>
+    <operation returnRequestStatus="true" name="deleteProductByCode">
+        <call-query href="delete_products_query">
+            <with-param name="code" query-param="code"/>
+        </call-query>
+    </operation>
+    <operation returnRequestStatus="true" name="addProduct">
+        <call-query href="insert_products_query">
+            <with-param name="code" query-param="code"/>
+            <with-param name="price" query-param="price"/>
+            <with-param name="name" query-param="name"/>
+        </call-query>
+    </operation>
+    <operation returnRequestStatus="true" name="updateProduct">
+        <call-query href="update_products_query">
+            <with-param name="code" query-param="code"/>
+            <with-param name="price" query-param="price"/>
+            <with-param name="name" query-param="name"/>
+            <with-param name="id" query-param="id"/>
+        </call-query>
+    </operation>
+    <resource method="GET" path="/products">
+        <call-query href="select_all_products_query"/>
+    </resource>
+    <resource method="POST" path="/products" returnRequestStatus="true">
+        <call-query href="insert_products_query">
+            <with-param name="code" query-param="code"/>
+            <with-param name="name" query-param="name"/>
+            <with-param name="price" query-param="price"/>
+        </call-query>
+    </resource>
+    <resource method="PUT" path="/products" returnRequestStatus="true">
+        <call-query href="update_products_query">
+            <with-param name="code" query-param="code"/>
+            <with-param name="name" query-param="name"/>
+            <with-param name="price" query-param="price"/>
+            <with-param name="id" query-param="id"/>
+        </call-query>
+    </resource>
+    <resource method="GET" path="/products/{code}">
+        <call-query href="select_with_key_products_query">
+            <with-param name="code" query-param="code"/>
+        </call-query>
+    </resource>
+    <resource method="DELETE" path="/products/{code}" returnRequestStatus="true">
+        <call-query href="delete_products_query">
+            <with-param name="code" query-param="code"/>
+        </call-query>
+    </resource>
+</data>
